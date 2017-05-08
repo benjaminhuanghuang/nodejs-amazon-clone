@@ -29,6 +29,11 @@ app.get('/', function (req, res) {
 
 });
 
+app.get('/about', function (req, res) {
+    res.render("about");
+
+});
+
 // Test it by using postman
 //  user x-www-form-urlencoded Body
 app.post("/create-user", function (req, res, next) {

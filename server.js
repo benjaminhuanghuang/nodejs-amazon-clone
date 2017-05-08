@@ -1,7 +1,9 @@
 var express = require("express");
+var bodyParser = require("body-parser");
 var morgan = require("morgan");
 var mongoose = require('mongoose');
 
+var User = require('./models/user');
 
 var app = express();
 mongoose.connect('mongodb://root:123abc@ds133961.mlab.com:33961/ecomm', function(err){
@@ -10,15 +12,31 @@ mongoose.connect('mongodb://root:123abc@ds133961.mlab.com:33961/ecomm', function
     }
     else
     {
-        console.log("Connected...");
+        console.log("Connected to the database...");
     }
 });
 // Using middleware
 app.use(morgan('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/', function(req, res){
     res.json("Hello");
 
+});
+
+// Test it by using postman
+//  user x-www-form-urlencoded Body
+app.post("/create-user", function(req, res, next){
+    var user = new User();
+    user.profile.name = req.body.name;
+    user.password = req.body.password;
+    user.email = req.body.email;
+    
+    user.save(function(err){
+        if(err) return next(err);
+        res.json("Successfully created a new user");
+    });
 });
 
 app.listen(3000, function(err){

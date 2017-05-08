@@ -2,43 +2,47 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var morgan = require("morgan");
 var mongoose = require('mongoose');
+var ejs = require('ejs');
+var engine = require('ejs-mate');
 
 var User = require('./models/user');
 
 var app = express();
-mongoose.connect('mongodb://root:123abc@ds133961.mlab.com:33961/ecomm', function(err){
-    if (err){
+mongoose.connect('mongodb://root:123abc@ds133961.mlab.com:33961/ecomm', function (err) {
+    if (err) {
         console.log(err);
-    }
-    else
-    {
+    } else {
         console.log("Connected to the database...");
     }
 });
 // Using middleware
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.engine('ejs', engine);
+app.set('view engine', 'ejs');
 
-app.get('/', function(req, res){
-    res.json("Hello");
+app.get('/', function (req, res) {
+    res.render("home");
 
 });
 
 // Test it by using postman
 //  user x-www-form-urlencoded Body
-app.post("/create-user", function(req, res, next){
+app.post("/create-user", function (req, res, next) {
     var user = new User();
     user.profile.name = req.body.name;
     user.password = req.body.password;
     user.email = req.body.email;
-    
-    user.save(function(err){
-        if(err) return next(err);
+
+    user.save(function (err) {
+        if (err) return next(err);
         res.json("Successfully created a new user");
     });
 });
 
-app.listen(3000, function(err){
+app.listen(3000, function (err) {
 
 })

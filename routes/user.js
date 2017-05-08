@@ -2,12 +2,8 @@ var router = require('express').Router();
 var User = require('../models/user');
 
 router.get("/signup", function (req, res, next) {
-    // res.render('accounts/signup', {
-    //     errors: req.flash('errors')
-    // });
-
     res.render('accounts/signup', {
-        errors: ""
+        errors: req.flash('errors')
     });
 });
 

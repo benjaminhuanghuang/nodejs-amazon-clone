@@ -14,6 +14,7 @@
     Morgan (logger middleware)
     EJS    
     MongoDB on mongoLab
+    Mongoose (Mongo ORM)
     Elastic search
     JQuery
     Stripe 

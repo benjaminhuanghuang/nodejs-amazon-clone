@@ -16,6 +16,7 @@ mongoose.connect('mongodb://root:123abc@ds133961.mlab.com:33961/ecomm', function
     }
 });
 // Using middleware
+app.use(express.static(__dirname + "/public"));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -24,29 +25,13 @@ app.use(bodyParser.urlencoded({
 app.engine('ejs', engine);
 app.set('view engine', 'ejs');
 
-app.get('/', function (req, res) {
-    res.render("home");
+// Router
+var mainRouter = require('./routes/main');    
+app.use(mainRouter);
 
-});
+var userRouter = require('./routes/user');
+app.use(userRouter);
 
-app.get('/about', function (req, res) {
-    res.render("about");
-
-});
-
-// Test it by using postman
-//  user x-www-form-urlencoded Body
-app.post("/create-user", function (req, res, next) {
-    var user = new User();
-    user.profile.name = req.body.name;
-    user.password = req.body.password;
-    user.email = req.body.email;
-
-    user.save(function (err) {
-        if (err) return next(err);
-        res.json("Successfully created a new user");
-    });
-});
 
 app.listen(3000, function (err) {
 

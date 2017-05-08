@@ -28,8 +28,8 @@ app.set('view engine', 'ejs');
 // Router
 var mainRouter = require('./routes/main');    
 app.use(mainRouter);
-
-var userRouter = require('./routes/user');
+ 
+var userRouter = require('./routes/user'); 
 app.use(userRouter);
 
 

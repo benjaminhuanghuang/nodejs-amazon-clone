@@ -1,6 +1,10 @@
 var router = require('express').Router();
 var User = require('../models/user');
 
+router.get("/signup", function (req, res) {
+    res.render('accounts/signup');
+});
+
 // Test it by using postman
 //  user x-www-form-urlencoded Body
 router.post("/signup", function (req, res) {

@@ -6,11 +6,14 @@ var engine = require('ejs-mate');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var flash = require('express-flash');
+var MongoStore = require('connect-mongo')(session);    // Session storage
+var passport = require('passport')
 
 var User = require('./models/user');
+var appConfig = require('./config/app_config');
 
 var app = express();
-mongoose.connect('mongodb://root:123abc@ds133961.mlab.com:33961/ecomm', function (err) {
+mongoose.connect(appConfig.database, function (err) {
     if (err) {
         console.log(err);
     } else {
@@ -28,9 +31,19 @@ app.use(cookieParser());
 app.use(session({
   resave: true,
   saveUninitialized: true,
-  secret: "aaaaaaaaaaaaaa"
+  secret: appConfig.secretKey,
+  store:new MongoStore({url:appConfig.database , autoReconnect:true })
 }));
 app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Add user field to every request
+app.use(function(req, res, next)
+{
+    res.locals.user = req.user;
+    next();
+});
 
 app.engine('ejs', engine);
 app.set('view engine', 'ejs');
@@ -42,7 +55,6 @@ app.use(mainRouter);
 var userRouter = require('./routes/user');
 app.use(userRouter);
 
-
-app.listen(3000, function (err) {
+app.listen(appConfig.port, function (err) {
 
 })

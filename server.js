@@ -10,6 +10,8 @@ var MongoStore = require('connect-mongo')(session);    // Session storage
 var passport = require('passport')
 
 var User = require('./models/user');
+var Category = require('./models/category');
+
 var appConfig = require('./config/app_config');
 
 var app = express();
@@ -45,6 +47,15 @@ app.use(function(req, res, next)
     next();
 });
 
+app.use(function(req, res, next) {
+  Category.find({}, function(err, categories) {
+    if (err) return next(err);
+    res.locals.categories = categories;
+    next();
+  });
+});
+
+
 app.engine('ejs', engine);
 app.set('view engine', 'ejs');
 
@@ -54,6 +65,9 @@ app.use(mainRouter);
 
 var userRouter = require('./routes/user');
 app.use(userRouter);
+
+var adminRouter = require('./routes/admin');
+app.use(adminRouter);
 
 app.listen(appConfig.port, function (err) {
 

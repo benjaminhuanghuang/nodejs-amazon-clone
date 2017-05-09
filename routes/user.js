@@ -39,7 +39,8 @@ router.post("/signup", function (req, res) {
     user.profile.name = req.body.name;
     user.password = req.body.password;
     user.email = req.body.email;
-
+    user.profile.picture = user.gravatar();
+     
     User.findOne({
         email: req.body.email
     }, function (err, existingUser) {
@@ -50,8 +51,10 @@ router.post("/signup", function (req, res) {
         } else {
             user.save(function (err) {
                 if (err) return next(err);
-                //res.json("Successfully created a new user");
-                return res.redirect("/");
+                req.logIn(user, function(err){
+                    if(err) return next(err);
+                    res.redirect('/profile');
+                });
             });
         }
     });
